@@ -41,9 +41,10 @@ class HomePage {
 
           <figure class="mt-6">
             <img
-              src="https://source.unsplash.com/1600x900/?storytelling,photography,journaling"
+              src="https://picsum.photos/1600/900?random=1"
               alt="Ilustrasi orang menulis cerita di laptop"
               class="w-full rounded-md shadow"
+              loading="lazy"
             />
             <figcaption class="text-sm text-center mt-2 text-gray-500">
               Ilustrasi pengguna berbagi cerita digital
