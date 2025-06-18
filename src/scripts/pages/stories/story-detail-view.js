@@ -1,3 +1,5 @@
+import IndexDB from "../../utils/index-db";
+
 export default class StoryDetailView {
   constructor(id) {
     this.container = document.getElementById(id);
@@ -22,6 +24,10 @@ export default class StoryDetailView {
 
         <div id="map-detail" class="w-full h-60 rounded-md overflow-hidden mb-6"></div>
 
+        <button id="save-story-btn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded shadow disable:opacity-50">
+          💾 Simpan Story
+        </button>
+
         <a href="#/stories" class="inline-block text-blue-600 hover:underline text-sm">
           &#x21A8; Back to list
         </a>
@@ -29,9 +35,33 @@ export default class StoryDetailView {
     `;
   }
 
-  showDetailStory(story) {
+  async showDetailStory(story) {
     this.container.innerHTML = this.render(story);
     this.renderMap(story);
+
+    const saveBtn = document.getElementById("save-story-btn");
+    if (saveBtn) {
+      try {
+        const existing = await IndexDB.getStoryById(story.id);
+        if (existing) {
+          saveBtn.textContent = "✅ Sudah Disimpan";
+          saveBtn.disabled = true;
+        }
+      } catch (err) {
+        console.error("Gagal cek story di IndexedDB", err);
+      }
+
+      saveBtn.addEventListener("click", async () => {
+        try {
+          await IndexDB.saveStory(story);
+          saveBtn.textContent = "✅ Sudah Disimpan";
+          saveBtn.disabled = true;
+          alert("Story berhasil disimpan untuk offline.");
+        } catch (err) {
+          alert("Gagal menyimpan story: " + err.message);
+        }
+      });
+    }
   }
   showLoginAlert() {
     alert("Login dulu ya!");
