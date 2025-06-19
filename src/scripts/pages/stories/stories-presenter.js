@@ -1,9 +1,10 @@
 import AuthHelper from "../../utils/auth-helper.js";
 
 class StoriesPresenter {
-  constructor(view, model) {
+  constructor(view, model, indexDB) {
     this.view = view;
     this.model = model;
+    this.dbModel = indexDB;
   }
 
   async show() {

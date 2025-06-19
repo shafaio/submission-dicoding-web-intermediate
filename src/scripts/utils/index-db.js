@@ -10,13 +10,21 @@ const dbPromise = openDB(DB_NAME, 1, {
 });
 
 const IndexDB = {
-  async saveStories(stories) {
+  async saveStories(list) {
     const db = await dbPromise;
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    for (const story of stories) {
-      tx.store.put(story);
+    const tx = db.transaction("stories", "readwrite");
+    const store = tx.objectStore("stories");
+    for (const story of list) {
+      await store.put(story);
     }
     await tx.done;
+  },
+
+  async saveStory(story) {
+    if (!story || !story.id) throw new Error("Invalid story object");
+
+    const db = await dbPromise;
+    await db.put("stories", story);
   },
 
   async getAllStories() {

@@ -53,7 +53,9 @@ export default class StoryDetailView {
 
       saveBtn.addEventListener("click", async () => {
         try {
+          console.log(story);
           await IndexDB.saveStory(story);
+          await this.cacheImage(story.photoUrl);
           saveBtn.textContent = "✅ Sudah Disimpan";
           saveBtn.disabled = true;
           alert("Story berhasil disimpan untuk offline.");
@@ -63,6 +65,20 @@ export default class StoryDetailView {
       });
     }
   }
+
+  async cacheImage(url) {
+    if ("caches" in window) {
+      try {
+        const cache = await caches.open("image-cache");
+        const response = await fetch(url, { mode: "no-cors" });
+        await cache.put(url, response.clone());
+        console.log("Gambar berhasil disimpan ke Cache Storage:", url);
+      } catch (err) {
+        console.error("Gagal menyimpan gambar ke cache:", err);
+      }
+    }
+  }
+
   showLoginAlert() {
     alert("Login dulu ya!");
   }

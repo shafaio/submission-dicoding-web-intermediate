@@ -1,6 +1,7 @@
 import StoriesView from "./stories-view";
 import StoryModel from "./story-model";
 import StoriesPresenter from "./stories-presenter";
+import IndexDB from "../../utils/index-db";
 
 export default class StoriesPage {
   async render() {
@@ -9,7 +10,7 @@ export default class StoriesPage {
 
   async afterRender() {
     const view = new StoriesView("stories-container");
-    const presenter = new StoriesPresenter(view, StoryModel);
+    const presenter = new StoriesPresenter(view, StoryModel, IndexDB);
 
     view.onClearOffline = () => presenter.clearOfflineStories();
 

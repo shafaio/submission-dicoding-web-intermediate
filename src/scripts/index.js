@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   await app.renderPage();
 
-  await registerServiceWorker();
+  // await registerServiceWorker();
 
   window.addEventListener("hashchange", async () => {
     MediaHelper.stopAllStreams();

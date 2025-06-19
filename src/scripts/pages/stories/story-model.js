@@ -4,7 +4,8 @@ import IndexDB from "../../utils/index-db.js";
 const token = localStorage.getItem("token");
 const StoryModel = {
   async getAllStories() {
-    try {
+    const online = navigator.onLine;
+    if (online) {
       const res = await fetch(`${CONFIG.BASE_URL}/stories`, {
         headers: {
           "Content-Type": "application/json",
@@ -13,32 +14,21 @@ const StoryModel = {
       });
       const { listStory } = await res.json();
 
-      await IndexDB.saveStories(listStory);
-
       return listStory;
-    } catch (error) {
-      console.warn("Gagal ambil data dari API, fallback ke IndexedDB", error);
-      const offlineStories = await IndexDB.getAllStories();
-      return offlineStories;
+    } else {
+      return this.getOfflineStories();
     }
   },
 
   async getStoryById(id) {
-    try {
-      const res = await fetch(`${CONFIG.BASE_URL}/stories/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const { story } = await res.json();
-      return story;
-    } catch (error) {
-      const offlineStory = await IndexDB.getStoryById(id);
-      if (offlineStory) return offlineStory;
-
-      throw new Error("Gagal mengambil story (offline & tidak ada cache)");
-    }
+    const res = await fetch(`${CONFIG.BASE_URL}/stories/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const { story } = await res.json();
+    return story;
   },
 
   async addNewStory({ name, description, photo, lat, lon }) {
